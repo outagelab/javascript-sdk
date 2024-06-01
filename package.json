@@ -1,0 +1,10 @@
+{
+  "name": "@outagelab/outagelab-sdk",
+  "version": "0.0.1",
+  "dependencies": {
+    "@mswjs/interceptors": "^0.29.1"
+  },
+  "scripts": {
+    "demo": "node example/main.js"
+  }
+}
