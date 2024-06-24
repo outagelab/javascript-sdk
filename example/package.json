@@ -1,7 +1,8 @@
 {
   "name": "outagelab-exampe",
   "dependencies": {
-    "@outagelab/outagelab-sdk": "^0.0.1"
+    "@outagelab/outagelab-sdk": "^0.0.1",
+    "dotenv": "^16.4.5"
   },
   "scripts": {
     "start": "node main.js"

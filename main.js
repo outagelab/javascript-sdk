@@ -5,9 +5,9 @@ const nodeInterceptors = require('@mswjs/interceptors/presets/node')
 module.exports = class OutageLabClient {
     constructor(options) {
         this._options = {
-            refreshInterval: 60_000,
-            datapageHost: "https://app.outagelab.com",
-            ...(options || {})
+            host: "https://app.outagelab.com",
+            ...(options || {}),
+            refreshInterval: 30_000,
         }
         this._interceptor = new BatchInterceptor({
             name: 'outagelab-interceptor',
@@ -16,7 +16,7 @@ module.exports = class OutageLabClient {
         this._interceptor.apply()
         this._interceptor.on('request', async ({ request, requestId }) => {
             try {
-                if (request.url.startsWith(this._options.datapageHost)) {
+                if (request.url.startsWith(this._options.host)) {
                     return
                 }
 
@@ -76,8 +76,10 @@ module.exports = class OutageLabClient {
     }
 
     async _refreshDatapage() {
+        console.log("request")
+        let response = null;
         try {
-            this._datapage = await fetch(`${this._options.datapageHost}/datapage`, {
+            response = await fetch(`${this._options.host}/api/datapage`, {
                 method: "POST",
                 headers: {
                     "x-api-key": this._options.apiKey,
@@ -87,10 +89,16 @@ module.exports = class OutageLabClient {
                     application: this._options.application,
                     environment: this._options.environment,
                 })
-            }).then(x => x.json())
+            })
+
+            this._datapage = await response.json()
         } catch (ex) {
             this._datapage = null
-            console.log('Fault data refresh error:', ex)
+            if (response) {
+                console.log(`OutgeLab data page request returned status ${response.status}`)
+            } else {
+                console.log(`OutgeLab data page request failed with exception: ${ex}`)
+            }
         }
     }
 }
