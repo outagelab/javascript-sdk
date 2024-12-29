@@ -70,9 +70,13 @@ class OutageLabClient {
     } catch (ex) {
       this._datapage = null;
       if (response) {
-        console.log(
-          `outagelab: data page request returned status ${response.status}`
-        );
+        if (response.status === 401) {
+          console.log("outagelab: request failed, invalid API key");
+        } else {
+          console.log(
+            `outagelab: request to ${response.url} returned status ${response.status}`
+          );
+        }
       } else {
         console.log(
           `outagelab: data page request failed with exception: ${ex}`

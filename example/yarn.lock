@@ -42,10 +42,10 @@ is-node-process@^1.2.0:
   resolved "https://registry.npmjs.org/is-node-process/-/is-node-process-1.2.0.tgz"
   integrity sha512-Vg4o6/fqPxIjtxgUH5QLJhwZ7gW5diGCVlXpuUfELC62CuxM1iHcRe51f2W1FDy04Ai4KJkagKjx3XaqyfRKXw==
 
-outagelab@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/outagelab/-/outagelab-0.2.0.tgz#8799cb1663f3742d6851f3dd1e442badc6d556c2"
-  integrity sha512-BgM+qa3sniAagsYkUZy4bu5FaVcFT2FhckS9Io09KwxCRgVNCeUOtCk9fjRAkMkAtJbfYT5N+GpyjIXAdEZ2uQ==
+outagelab@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/outagelab/-/outagelab-0.2.3.tgz#0168b425d06ebce2b367b1db9575592a822140f8"
+  integrity sha512-m0FSfdIz0zdZPLjBGs9KNtwU3qcX2uFzmiq//AoWflkolT1K5W/zjm/ItpcmGtF4MOp+jVg0QghJxx+Y1miuzA==
   dependencies:
     "@mswjs/interceptors" "^0.29.1"
 

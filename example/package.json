@@ -1,7 +1,7 @@
 {
   "name": "outagelab-exampe",
   "dependencies": {
-    "outagelab": "^0.2.2",
+    "outagelab": "^0.2.3",
     "dotenv": "^16.4.5"
   },
   "scripts": {

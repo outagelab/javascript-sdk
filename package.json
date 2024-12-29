@@ -1,6 +1,6 @@
 {
   "name": "outagelab",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "main": "main.js",
   "dependencies": {
     "@mswjs/interceptors": "^0.29.1"
