@@ -2,53 +2,20 @@ const { BatchInterceptor } = require("@mswjs/interceptors");
 const { FetchInterceptor } = require("@mswjs/interceptors/fetch");
 const nodeInterceptors = require("@mswjs/interceptors/presets/node");
 
-module.exports = class OutageLabClient {
+class OutageLabClient {
   constructor(options) {
+    if (!options.apiKey) {
+      console.warn(`outagelab: failed to start, no api key was provided`);
+      return;
+    }
     this._options = {
       host: "https://app.outagelab.com",
       ...(options || {}),
-      refreshInterval: 30_000,
+      refreshInterval: 5_000,
     };
     this._interceptor = new BatchInterceptor({
       name: "outagelab-interceptor",
       interceptors: [...nodeInterceptors.default, new FetchInterceptor()],
-    });
-    this._interceptor.apply();
-    this._interceptor.on("request", async ({ request, requestId }) => {
-      try {
-        if (request.url.startsWith(this._options.host)) {
-          return;
-        }
-
-        // all needs refactoring with reduced data model
-        const app = this._datapage?.applications?.find(
-          (x) => x.id === this._options.application
-        );
-        const enabled = app?.environments?.find(
-          (x) => x.id === this._options.environment
-        )?.enabled;
-
-        if (!enabled) {
-          return;
-        }
-
-        const host = new URL(request.url).host;
-        const rule = app?.rules?.find((x) => x.enabled && x.host === host);
-        if (!rule) {
-          return;
-        }
-
-        if (rule.duration || rule.status) {
-          const duration = rule.duration || 0.1;
-          await new Promise((resolve) => setTimeout(resolve, duration * 1000));
-        }
-
-        if (rule.status) {
-          request.respondWith(new Response(null, { status: rule.status }));
-        }
-      } catch (ex) {
-        console.log(ex);
-      }
     });
     this.start();
   }
@@ -63,11 +30,15 @@ module.exports = class OutageLabClient {
       return;
     }
 
+    this._refreshDatapage();
+
     this._refreshIntervalId = setInterval(
       this._refreshDatapage.bind(this),
       this._options.refreshInterval
     );
-    this._refreshDatapage();
+
+    this._interceptor.apply();
+    this._interceptor.on("request", this._requestInterceptor.bind(this));
   }
 
   stop() {
@@ -77,12 +48,13 @@ module.exports = class OutageLabClient {
 
     this._datapage = null;
     clearTimeout(this._refreshIntervalId);
+    this._interceptor.removeAllListeners();
   }
 
   async _refreshDatapage() {
     let response = null;
     try {
-      response = await fetch(`${this._options.host}/api/datapage`, {
+      response = await fetch(`${this._options.host}/api/v1/datapage`, {
         method: "POST",
         headers: {
           "x-api-key": this._options.apiKey,
@@ -99,11 +71,52 @@ module.exports = class OutageLabClient {
       this._datapage = null;
       if (response) {
         console.log(
-          `OutgeLab data page request returned status ${response.status}`
+          `outagelab: data page request returned status ${response.status}`
         );
       } else {
-        console.log(`OutgeLab data page request failed with exception: ${ex}`);
+        console.log(
+          `outagelab: data page request failed with exception: ${ex}`
+        );
       }
     }
   }
+
+  async _requestInterceptor({ request, requestId }) {
+    try {
+      const host = new URL(request.url).host;
+      let rule = null;
+      for (let r of this._datapage?.rules || []) {
+        if (r.type !== "http-client-request.v1") {
+          continue;
+        }
+        if (r.httpClientRequestV1?.host === host) {
+          rule = r.httpClientRequestV1;
+          break;
+        }
+      }
+
+      if (!rule) {
+        return;
+      }
+
+      if (rule.duration || rule.status) {
+        const duration = rule.duration || 0.1;
+        await new Promise((resolve) => setTimeout(resolve, duration * 1000));
+      }
+
+      if (rule.status) {
+        request.respondWith(new Response(null, { status: rule.status }));
+      }
+    } catch (ex) {
+      console.error(
+        `outagelab: internal error in HTTP request interceptor: ${ex}`
+      );
+    }
+  }
+}
+
+module.exports = {
+  start(options) {
+    new OutageLabClient(options);
+  },
 };

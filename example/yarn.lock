@@ -32,13 +32,6 @@
   resolved "https://registry.npmjs.org/@open-draft/until/-/until-2.1.0.tgz"
   integrity sha512-U69T3ItWHvLwGg5eJ0n3I62nWuE6ilHlmz7zM0npLBRvPRd7e6NYmg54vvRtP5mZG7kZqZCFVdsTWo7BPtBujg==
 
-"@outagelab/outagelab-sdk@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.npmjs.org/@outagelab/outagelab-sdk/-/outagelab-sdk-0.0.1.tgz"
-  integrity sha512-ZYRBUchNGhmqmHcQuzV4a6F7pEsIqMMLN+HcpyVu5qY3IwIvOvedjZXODLtrX9DZ49csmNgf4mteh/QnduSHlw==
-  dependencies:
-    "@mswjs/interceptors" "^0.29.1"
-
 dotenv@^16.4.5:
   version "16.4.5"
   resolved "https://registry.npmjs.org/dotenv/-/dotenv-16.4.5.tgz"
@@ -48,6 +41,13 @@ is-node-process@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/is-node-process/-/is-node-process-1.2.0.tgz"
   integrity sha512-Vg4o6/fqPxIjtxgUH5QLJhwZ7gW5diGCVlXpuUfELC62CuxM1iHcRe51f2W1FDy04Ai4KJkagKjx3XaqyfRKXw==
+
+outagelab@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/outagelab/-/outagelab-0.2.0.tgz#8799cb1663f3742d6851f3dd1e442badc6d556c2"
+  integrity sha512-BgM+qa3sniAagsYkUZy4bu5FaVcFT2FhckS9Io09KwxCRgVNCeUOtCk9fjRAkMkAtJbfYT5N+GpyjIXAdEZ2uQ==
+  dependencies:
+    "@mswjs/interceptors" "^0.29.1"
 
 outvariant@^1.2.1, outvariant@^1.4.0:
   version "1.4.2"
